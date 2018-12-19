@@ -8,6 +8,7 @@ using FantasyGridironSite.Models;
 using FantasyGridironSite.Helper;
 using System.Net.Http;
 using Newtonsoft.Json;
+using System.Web;
 
 namespace FantasyGridironSite.Controllers
 {
@@ -27,6 +28,32 @@ namespace FantasyGridironSite.Controllers
             }
 
             return View(players);
+        }
+
+        public async Task<IActionResult> Edit(string Id)
+        {
+            List<Player> players = new List<Player>();
+            Player player = new Player();
+            HttpClient client = _api.Initial();
+            HttpResponseMessage res = await client.GetAsync("api/players");
+            if (res.IsSuccessStatusCode)
+            {
+                var result = res.Content.ReadAsStringAsync().Result;
+                players = JsonConvert.DeserializeObject<List<Player>>(result);
+                player = players.Where(s => s.Id == Id).FirstOrDefault();
+            }
+
+            return View(player);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> EditAsync(Player player)
+        {
+            HttpClient client = _api.Initial();
+            HttpResponseMessage res = await client.PostAsJsonAsync("api/players/" + player.Id, JsonConvert.SerializeObject(player));
+
+            Console.Write(res.Content);
+            return RedirectToAction("Index");
         }
 
         public IActionResult About()
