@@ -1,14 +1,16 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
-namespace FantasyGridiron.Models
+namespace FantasyGridironSite.Models
 {
     public class Player
     {
-
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; }
+
+        [BsonElement("ESPNId")]
+        public string ESPNId { get; set; }
 
         [BsonElement("Name")]
         public string PlayerName { get; set; }

@@ -1,0 +1,89 @@
+﻿@model IEnumerable<FantasyGridironSite.Models.Player>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.ESPNId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PlayerName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PlayerPosition)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PlayerTeam)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PlayerNumber)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PlayerBOD)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PlayerDrafted)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PlayerExperience)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PlayerCollege)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PlayerImage)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.ESPNId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PlayerName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PlayerPosition)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PlayerTeam)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PlayerNumber)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PlayerBOD)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PlayerDrafted)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PlayerExperience)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PlayerCollege)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PlayerImage)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
