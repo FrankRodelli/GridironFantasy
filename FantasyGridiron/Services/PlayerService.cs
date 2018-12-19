@@ -20,7 +20,8 @@ namespace FantasyGridiron.Services
 
         public List<Player> Get()
         {
-            return _players.Find(book => true).ToList();
+            //player was book before see if this is now a problem
+            return _players.Find(player => true).ToList();
         }
 
         public Player Get(string id)
