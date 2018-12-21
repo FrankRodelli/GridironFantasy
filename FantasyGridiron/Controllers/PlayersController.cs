@@ -22,7 +22,7 @@ namespace FantasyGridiron.Controllers
             return _playerService.Get();
         }
 
-        [HttpGet("{id:length(24)}", Name = "GetPlayer")]
+        [HttpGet("{id}", Name = "GetPlayer")]
         public ActionResult<Player> Get(string id)
         {
             var player = _playerService.Get(id);
@@ -43,7 +43,7 @@ namespace FantasyGridiron.Controllers
             return CreatedAtRoute("GetPlayer", new { id = player.Id.ToString() }, player);
         }
 
-        [HttpPut("{id:length(24)}")]
+        [HttpPut("{id}")]
         public IActionResult Update(string id, Player playerIn)
         {
             var player = _playerService.Get(id);
@@ -58,7 +58,7 @@ namespace FantasyGridiron.Controllers
             return NoContent();
         }
 
-        [HttpDelete("{id:length(24)}")]
+        [HttpDelete("{id}")]
         public IActionResult Delete(string id)
         {
             var player = _playerService.Get(id);

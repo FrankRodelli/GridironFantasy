@@ -39,5 +39,6 @@ namespace FantasyGridironSite.Models
 
         [BsonElement("Picture")]
         public string PlayerImage { get; set; }
+
     }
 }

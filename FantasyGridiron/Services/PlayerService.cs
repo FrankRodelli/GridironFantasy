@@ -24,9 +24,8 @@ namespace FantasyGridiron.Services
             return _players.Find(player => true).ToList();
         }
 
-        public Player Get(string id)
+        public Player Get(string docId)
         {
-            var docId = new ObjectId(id);
             return _players.Find<Player>(player => player.Id == docId).FirstOrDefault();
         }
 
@@ -36,9 +35,8 @@ namespace FantasyGridiron.Services
             return player;
         }
 
-        public void Update(string id, Player playerIn)
+        public void Update(string docId, Player playerIn)
         {
-            var docId = new ObjectId(id);
 
             _players.ReplaceOne(Player => Player.Id == docId, playerIn);
         }
@@ -48,7 +46,7 @@ namespace FantasyGridiron.Services
             _players.DeleteOne(player => player.Id == playerIn.Id);
         }
 
-        public void Remove(ObjectId id)
+        public void Remove(string id)
         {
             _players.DeleteOne(player => player.Id == id);
         }

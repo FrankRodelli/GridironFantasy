@@ -10,6 +10,9 @@ namespace FantasyGridiron.Models
         [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; }
 
+        [BsonElement("ESPNId")]
+        public string ESPNId { get; set; }
+
         [BsonElement("Name")]
         public string PlayerName { get; set; }
 
