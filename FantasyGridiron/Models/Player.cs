@@ -10,8 +10,8 @@ namespace FantasyGridiron.Models
         [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; }
 
-        [BsonElement("ESPNId")]
-        public string ESPNId { get; set; }
+        [BsonElement("YHId")]
+        public string YHId { get; set; }
 
         [BsonElement("Name")]
         public string PlayerName { get; set; }
@@ -24,7 +24,7 @@ namespace FantasyGridiron.Models
 
         //Might need to change this to bson int if any errors
         [BsonElement("Number")]
-        public int PlayerNumber { get; set; }
+        public string PlayerNumber { get; set; }
 
         [BsonElement("Born")]
         public string PlayerBOD { get; set; }
