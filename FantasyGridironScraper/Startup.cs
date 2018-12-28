@@ -13,13 +13,13 @@ namespace FantasyGridironScraper
     public class Startup
     {
         List<Player> theThing;
+        ScrapePlayerData scraper;
 
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            var scraper = new ScrapePlayerData();
-            theThing = scraper.GetSomething();
+            scraper = new ScrapePlayerData();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -32,16 +32,12 @@ namespace FantasyGridironScraper
 
             app.Run(async (context) =>
             {
-               foreach (var player in theThing)
-                {
-                    try
-                    {
-                        await context.Response.WriteAsync(player.YHId + "\n");
-                    }
-                    catch
-                    {
+               theThing = scraper.GetSomething();
 
-                    }
+            foreach (var player in theThing)
+            {
+                    await context.Response.WriteAsync(player.YHId + " " + player.PlayerName + " " + player.PlayerNumber + " " + player.PlayerPosition + " " + player.PlayerTeam + " " + player.PlayerHeight + " " + player.PlayerWeight + " " + player.PlayerDrafted + " " + player.PlayerCollege + " " + player.PlayerImage + "\n");
+
                 }
             });
         }

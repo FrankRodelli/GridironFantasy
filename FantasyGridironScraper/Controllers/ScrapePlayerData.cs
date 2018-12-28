@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 using HtmlAgilityPack;
 using System.Text.RegularExpressions;
 using System.Web;
-//Your get player data method was working but when  the methods are used together there's an out of index exception and it freezes
+using System.Net.Http;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
 namespace FantasyGridironScraper
 {
     public class ScrapePlayerData
@@ -17,9 +19,7 @@ namespace FantasyGridironScraper
         public ScrapePlayerData()
         {
             GetPlayerIDs();
-
             GetPlayerData();
-
         }
 
 
@@ -35,59 +35,99 @@ namespace FantasyGridironScraper
 
                 var div = doc.GetElementbyId("players-table");
 
-                for (int i = 0; i < 25; i++)
+                int rows = 25;
+                for (int i = 0; i < rows; i++)
                 {
-                    try
-                    {
-                        //Awful workaround for scraping player ID's
-                        var playerLink = (div.ChildNodes[2/*Selects table container*/]
-                            .ChildNodes[1/*Selects Inner tbody*/]
-                            .ChildNodes[2/*Selects each row in table*/]
-                            .ChildNodes[i/*Selects row(player)*/]
-                            .ChildNodes[1/*Selects name area container*/]
-                            .ChildNodes[0/*Selects name area*/]
-                            .ChildNodes[1/*Selects name span*/]
-                            .ChildNodes[3/*selects inner name span*/]
-                            .ChildNodes[0/*Selects player link*/]
-                            .Attributes[1/*gets link from href*/]
-                            .DeEntitizeValue);
 
-                        int pos = playerLink.LastIndexOf("/") + 1;
-                        playerID.Add(playerLink.Substring(pos, playerLink.Length - pos));
-                    }
-                    catch
-                    {
+                    //Awful workaround for scraping player ID's
+                    var playerLink = div.ChildNodes[2/*Selects table container*/]
+                        .ChildNodes[1/*Selects Inner tbody*/]
+                        .ChildNodes[2/*Selects each row in table*/]
+                        .ChildNodes[i/*Selects row(player)*/]
+                        .ChildNodes[1/*Selects name area container*/]
+                        .ChildNodes[0/*Selects name area*/]
+                        .ChildNodes[1/*Selects name span*/]
+                        .ChildNodes[3/*selects inner name span*/]
+                        .ChildNodes[0/*Selects player link*/]
+                        .Attributes[1/*gets link from href*/]
+                        .DeEntitizeValue;
 
-                    }
+                    int pos = playerLink.LastIndexOf("/") + 1;
 
+
+                    playerID.Add(playerLink.Substring(pos, playerLink.Length - pos));
+
+                    rows = (div.ChildNodes[2/*Selects table container*/]
+                        .ChildNodes[1/*Selects Inner tbody*/]
+                        .ChildNodes[2/*Selects each row in table*/].ChildNodes).Count;
 
                 }
             }
+
+            
         }
 
         public void GetPlayerData()
         {
-            foreach(var id in playerID)
+            Parallel.ForEach(playerID, (id) =>
             {
                 try
                 {
                     Player player = new Player();
-                    var url = "https://sports.yahoo.com/nfl/players/" + id + "/";
+                    var url = "https://sports.yahoo.com/nfl/players/" + id;
                     var web = new HtmlWeb();
                     var doc = web.Load(url);
 
+                    //Set YHID
+                    player.YHId = id; //id
+
+                    //Set player data
                     var pid = doc.DocumentNode.SelectNodes("//*[@class='ys-name']");
-                    player.YHId = pid[0].InnerHtml;
+                    player.PlayerName = pid[0].InnerHtml;
 
-                    players.Add(player);
+                    pid = doc.DocumentNode.SelectNodes("//*[@class='Row Mb(15px) Fz(14px)']");
+                    player.PlayerNumber = Regex.Replace(pid[0].ChildNodes[0].ChildNodes[0].ChildNodes[0].ChildNodes[0].InnerHtml, @"[^\d]", "");
+
+                    player.PlayerPosition = Regex.Replace(pid[0].ChildNodes[0].ChildNodes[0].ChildNodes[1].InnerText, @"[,]", "");
+
+                    player.PlayerTeam = Regex.Replace(pid[0].ChildNodes[0].ChildNodes[0].ChildNodes[2].InnerText, @"[,]", "");
+
+                    pid = doc.DocumentNode.SelectNodes("//*[@class='Fz(13px) Lh(1.8) Maw(600px)']");
+
+                    player.PlayerHeight = HtmlEntity.DeEntitize(pid[0].ChildNodes[0].ChildNodes[1].InnerText);
+
+                    player.PlayerWeight = HtmlEntity.DeEntitize(pid[0].ChildNodes[1].ChildNodes[1].InnerText);
+
+                    //player.PlayerDrafted = (HtmlEntity.DeEntitize(pid[0].ChildNodes[5].ChildNodes[1].InnerText)).Substring(0, 4);
+
+                    player.PlayerCollege = HtmlEntity.DeEntitize(pid[0].ChildNodes[3].ChildNodes[1].InnerText);
+
+                    pid = doc.DocumentNode.SelectNodes("//*[@class='IbBox Bgr(nr) Pos(r) Miw(228px) W(228px) H(228px) Bgp(50%,25px) Bgz(135%) Bdrs(50%) Mend(40px)']");
+
+                    AddPlayer(player);
                 }
-                catch
-                {
+                catch { 
+}
 
-                }
 
-            }
-            
+            });
+
+        }
+
+        public void AddPlayer(Player player)
+        {
+            var client = new HttpClient();
+            client.BaseAddress = new Uri("https://fantasygridiron.azurewebsites.net/");
+
+
+            JObject jo = JObject.Parse(JsonConvert.SerializeObject(player));
+            jo.Property("Id").Remove();
+
+            //HTTP POST
+            var postTask = client.PostAsJsonAsync("api/players", jo);
+            postTask.Wait();
+
+
         }
 
         public List<Player> GetSomething()

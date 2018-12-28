@@ -1,14 +1,25 @@
 ﻿@model IEnumerable<FantasyGridironSite.Models.Player>
+@using PagedList.Mvc;
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "NFL Players";
 }
 
-<h2>Index</h2>
+<h2>NFL Players</h2>
 
 <p>
     <a asp-action="Create">Create New</a>
 </p>
+
+@using (Html.BeginForm())
+{
+    <p>
+        Search: @Html.TextBox("SearchString")
+        <input type="submit" value="Search" />
+    </p>
+}
+
 <table class="table">
     <thead>
         <tr>
@@ -25,59 +36,42 @@
                 @Html.DisplayNameFor(model => model.PlayerNumber)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.PlayerBOD)
-            </th>
-            <th>
                 @Html.DisplayNameFor(model => model.PlayerDrafted)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.PlayerExperience)
-            </th>
-            <th>
                 @Html.DisplayNameFor(model => model.PlayerCollege)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PlayerImage)
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.PlayerName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PlayerPosition)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PlayerTeam)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PlayerNumber)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PlayerBOD)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PlayerDrafted)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PlayerExperience)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PlayerCollege)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PlayerImage)
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
-                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Delete", "Delete", new { id=item.Id })
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PlayerName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PlayerPosition)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PlayerTeam)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PlayerNumber)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PlayerDrafted)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PlayerCollege)
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+                    @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                    @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

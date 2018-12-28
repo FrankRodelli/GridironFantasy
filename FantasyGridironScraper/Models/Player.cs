@@ -25,17 +25,17 @@ namespace FantasyGridironSite.Models
         [BsonElement("Number")]
         public string PlayerNumber { get; set; }
 
-        [BsonElement("Born")]
-        public string PlayerBOD { get; set; }
-
         [BsonElement("Drafted")]
         public string PlayerDrafted { get; set; }
 
-        [BsonElement("Experience")]
-        public string PlayerExperience { get; set; }
-
         [BsonElement("College")]
         public string PlayerCollege { get; set; }
+
+        [BsonElement("Weight")]
+        public string PlayerWeight { get; set; }
+
+        [BsonElement("Height")]
+        public string PlayerHeight { get; set; }
 
         [BsonElement("Picture")]
         public string PlayerImage { get; set; }

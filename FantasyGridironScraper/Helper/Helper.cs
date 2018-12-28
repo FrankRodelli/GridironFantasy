@@ -4,9 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Net.Http;
 
-namespace FantasyGridironSite.Helper
+namespace FantasyGridironScraper.Helper
 {
-    public class FantasyAPI
+    public class FantasyGridironScraper
     {
 
         public HttpClient Initial()

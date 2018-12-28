@@ -3,32 +3,53 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using PagedList;
 using Microsoft.AspNetCore.Mvc;
 using FantasyGridironSite.Models;
 using FantasyGridironSite.Helper;
 using System.Net.Http;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System.Web;
 
 namespace FantasyGridironSite.Controllers
 {
     public class HomeController : Controller
     {
         FantasyAPI _api = new FantasyAPI();
+        IEnumerable<Player> playerList;
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string sortOrder, string currentFilter,string searchString, int? page)
         {
+            ViewBag.CurrentSort = sortOrder;
+            ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "PlayerName" : "";
+
+            if (searchString != null)
+            {
+                page = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewBag.CurrentFilter = searchString;
+
             List<Player> players = new List<Player>();
             HttpClient client = _api.Initial();
             HttpResponseMessage res = await client.GetAsync("api/players");
             if (res.IsSuccessStatusCode)
             {
                 var result = res.Content.ReadAsStringAsync().Result;
-                players = JsonConvert.DeserializeObject<List<Player>>(result);
+                playerList = JsonConvert.DeserializeObject<List<Player>>(result);
             }
 
-            return View(players);
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                playerList = playerList.Where(s => s.PlayerName.ToLower().Contains(searchString.ToLower())
+                    || s.PlayerCollege.ToLower().Contains(searchString.ToLower()) || s.PlayerTeam.ToLower().Contains(searchString.ToLower()));
+            }
+
+            return View(playerList);
         }
 
         public ActionResult Create()
